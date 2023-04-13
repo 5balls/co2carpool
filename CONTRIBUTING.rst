@@ -3,7 +3,7 @@ Contributing to co2planner
 
 Thanks a lot for considering contributing to the project!
 
-Please make yourself familiar with our `code of conduct <CODE_OF_CONDUCT.md>`_ first.
+Please make yourself familiar with our `code of conduct <CODE_OF_CONDUCT.rst>`_ first.
 
 This is still an very early state of the project and there is only one contributor (Florian Pesth <fpesth@gmx.de>) right now.
 
