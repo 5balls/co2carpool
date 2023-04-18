@@ -52,17 +52,74 @@ This is a preprocessing step to estimate areas around car routes to see which pe
 
 We can now get an equation for $d'(d'')$ by setting the total $CO_2$ emissions for the seperate travel by car and public transport to the total $CO_2$ emissions for the car driver picking someone up at the pickup position:
 
-\begin{eqnarray}
-& e_\text{car}d_\text{car} + e_\text{pt} \sqrt{\left(d_\text{car}-d''\right)^2+{d'}^2} \\
-= & e_\text{car} \sqrt{{d''}^2+{d'}^2} + e_\text{car}\sqrt{\left(d_\text{car}-d''\right)^2+{d'}^2}
-\end{eqnarray}
+\begin{equation}d_\mathrm{car} e_\mathrm{car} - e_\mathrm{car} \sqrt{d'^{2} + d''^{2}} - e_\mathrm{car} \sqrt{d'^{2} + \left(- d'' + d_\mathrm{car}\right)^{2}} + e_\mathrm{pt} \sqrt{d'^{2} + \left(- d'' + d_\mathrm{car}\right)^{2}} \left(n - 1\right) + e_\mathrm{pt} \sqrt{d'^{2} + \left(- d'' + d_\mathrm{car}\right)^{2}}=0\end{equation}
 
-The form for $d'(d'')$ is obtained via an CAS program and yields to a long expression:
+Solving this for $d'$ gives us the following solutions:
 
-\begin{eqnarray}
-{d'}^2 & = & \frac{1}{4e_\text{car}^2e_\text{pt}^2-4e_\text{car}e_\text{pt}^3+e_\text{pt}^4}\left(\right.\\
-& & - 4{d''}^2e_\text{car}^2e_\text{pt}^2 + 4{d''}^2e_\text{car}e_\text{pt}^3\\
-& & - 4{d''}^2e_\text{pt}^4 - 4{d''}d_\text{car}e_\text{car}^3e_\text{pt}
-\end{eqnarray}
+\begin{equation}- \frac{1}{e_\mathrm{pt} n} \sqrt{- \frac{1}{4 e_\mathrm{car}^{2} - 4 e_\mathrm{car} e_\mathrm{pt} n + e_\mathrm{pt}^{2} n^{2}} \left(\splitfrac{4 d''^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} - 4 d''^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} + d''^{2} e_\mathrm{pt}^{4} n^{4} + 4 d'' d_\mathrm{car} e_\mathrm{car}^{3} e_\mathrm{pt} n - 10 d'' d_\mathrm{car} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2}}{ + 8 d'' d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} - 2 d'' d_\mathrm{car} e_\mathrm{pt}^{4} n^{4} + 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{3} \sqrt{\splitfrac{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2}}{ \splitfrac{+ d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n}{ - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}}}} - 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{2} e_\mathrm{pt} n \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} - 2 d_\mathrm{car}^{2} e_\mathrm{car}^{4} + 4 d_\mathrm{car}^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} - 4 d_\mathrm{car}^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} + d_\mathrm{car}^{2} e_\mathrm{pt}^{4} n^{4}}\right)}\end{equation}
 
-... equation incomplete, to be continued
+\begin{equation}\frac{1}{e_\mathrm{pt} n} \sqrt{\frac{1}{4 e_\mathrm{car}^{2} - 4 e_\mathrm{car} e_\mathrm{pt} n + e_\mathrm{pt}^{2} n^{2}} \left(- 4 d''^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} + 4 d''^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} - d''^{2} e_\mathrm{pt}^{4} n^{4} - 4 d'' d_\mathrm{car} e_\mathrm{car}^{3} e_\mathrm{pt} n + 10 d'' d_\mathrm{car} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} - 8 d'' d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} + 2 d'' d_\mathrm{car} e_\mathrm{pt}^{4} n^{4} - 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{3} \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} + 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{2} e_\mathrm{pt} n \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} + 2 d_\mathrm{car}^{2} e_\mathrm{car}^{4} - 4 d_\mathrm{car}^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} + 4 d_\mathrm{car}^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} - d_\mathrm{car}^{2} e_\mathrm{pt}^{4} n^{4}\right)}\end{equation}
+
+\begin{equation}- \frac{1}{e_\mathrm{pt} n} \sqrt{- \frac{1}{4 e_\mathrm{car}^{2} - 4 e_\mathrm{car} e_\mathrm{pt} n + e_\mathrm{pt}^{2} n^{2}} \left(4 d''^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} - 4 d''^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} + d''^{2} e_\mathrm{pt}^{4} n^{4} + 4 d'' d_\mathrm{car} e_\mathrm{car}^{3} e_\mathrm{pt} n - 10 d'' d_\mathrm{car} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} + 8 d'' d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} - 2 d'' d_\mathrm{car} e_\mathrm{pt}^{4} n^{4} - 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{3} \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} + 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{2} e_\mathrm{pt} n \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} - 2 d_\mathrm{car}^{2} e_\mathrm{car}^{4} + 4 d_\mathrm{car}^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} - 4 d_\mathrm{car}^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} + d_\mathrm{car}^{2} e_\mathrm{pt}^{4} n^{4}\right)}\end{equation}
+
+\begin{equation}\frac{1}{e_\mathrm{pt} n} \sqrt{\frac{1}{4 e_\mathrm{car}^{2} - 4 e_\mathrm{car} e_\mathrm{pt} n + e_\mathrm{pt}^{2} n^{2}} \left(- 4 d''^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} + 4 d''^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} - d''^{2} e_\mathrm{pt}^{4} n^{4} - 4 d'' d_\mathrm{car} e_\mathrm{car}^{3} e_\mathrm{pt} n + 10 d'' d_\mathrm{car} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} - 8 d'' d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} + 2 d'' d_\mathrm{car} e_\mathrm{pt}^{4} n^{4} + 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{3} \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} - 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{2} e_\mathrm{pt} n \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} + 2 d_\mathrm{car}^{2} e_\mathrm{car}^{4} - 4 d_\mathrm{car}^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} + 4 d_\mathrm{car}^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} - d_\mathrm{car}^{2} e_\mathrm{pt}^{4} n^{4}\right)}\end{equation}
+
+The solution was created by the following python script:
+
+@O ../src/isocalc_latex.py
+@{#!/usr/bin/env python3
+from sympy import *
+dcar = Symbol('d_\mathrm{car}', positive=True, finite=True, real=True)
+ecar = Symbol('e_\mathrm{car}', positive=True, finite=True, real=True)
+ept = Symbol('e_\mathrm{pt}', positive=True, finite=True, real=True)
+dd = Symbol('d\'', positive=True, finite=True, real=True)
+ddd = Symbol('d\'\'', finite=True, real=True)
+dpt = sqrt((dcar-ddd)**2+dd**2)
+dcpt = sqrt(ddd**2+dd**2)
+n = Symbol('n', positive=True, integer=True, nonzero=True)
+solutions = solve(ecar*dcar+ept*dpt+(n-1)*ept*dpt-ecar*dcpt-ecar*dpt,dd)
+print(latex(ecar*dcar+ept*dpt+(n-1)*ept*dpt-ecar*dcpt-ecar*dpt,long_frac_ratio=2,mode='equation'))
+for solution in solutions:
+  ssolution = simplify(solution)
+  print("")
+  print(latex(ssolution,long_frac_ratio=2,mode='equation'))
+@}
+
+@O ../src/isocalc_cxx.py
+@{#!/usr/bin/env python3
+from sympy import *
+dcar = Symbol('d_car', positive=True, finite=True, real=True)
+ecar = Symbol('e_car', positive=True, finite=True, real=True)
+ept = Symbol('e_pt', positive=True, finite=True, real=True)
+dd = Symbol('d_dash', positive=True, finite=True, real=True)
+ddd = Symbol('d_doubledash', finite=True, real=True)
+dpt = sqrt((dcar-ddd)**2+dd**2)
+dcpt = sqrt(ddd**2+dd**2)
+n = Symbol('n', positive=True, integer=True, nonzero=True)
+solutions = solve(ecar*dcar+ept*dpt+(n-1)*ept*dpt-ecar*dcpt-ecar*dpt,dd)
+
+for solution in solutions:
+  ssolution = simplify(solution)
+  print("")
+  print(cxxcode(ssolution))
+@}
+
+@O ../src/isocalc_fortran.py
+@{#!/usr/bin/env python3
+from sympy import *
+dcar = Symbol('d_car', positive=True, finite=True, real=True)
+ecar = Symbol('e_car', positive=True, finite=True, real=True)
+ept = Symbol('e_pt', positive=True, finite=True, real=True)
+dd = Symbol('d_dash', positive=True, finite=True, real=True)
+ddd = Symbol('d_doubledash', finite=True, real=True)
+dpt = sqrt((dcar-ddd)**2+dd**2)
+dcpt = sqrt(ddd**2+dd**2)
+n = Symbol('n', positive=True, integer=True, nonzero=True)
+solutions = solve(ecar*dcar+ept*dpt+(n-1)*ept*dpt-ecar*dcpt-ecar*dpt,dd)
+
+for solution in solutions:
+  ssolution = simplify(solution)
+  print("")
+  print(fcode(ssolution,source_format='free'))
+@}
+

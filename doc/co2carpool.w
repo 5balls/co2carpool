@@ -15,10 +15,12 @@
 % You should have received a copy of the GNU Affero General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-\documentclass[twocolumn,a4paper]{article}
+\documentclass[a4paper]{article}
+\usepackage{hyperref}
+\usepackage{listings}
 \usepackage[margin=2cm]{geometry}
 \usepackage{tikz}
-\usepackage{amsmath}
+\usepackage{mathtools}
 \usetikzlibrary{quotes,angles,positioning}
 
 \title{$CO_2$ Carpool planner}
