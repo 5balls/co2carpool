@@ -56,17 +56,10 @@ We can now get an equation for $d'(d'')$ by setting the total $CO_2$ emissions f
 
 Solving this for $d'$ gives us the following solutions:
 
-\begin{equation}- \frac{1}{e_\mathrm{pt} n} \sqrt{- \frac{1}{4 e_\mathrm{car}^{2} - 4 e_\mathrm{car} e_\mathrm{pt} n + e_\mathrm{pt}^{2} n^{2}} \left(\splitfrac{4 d''^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} - 4 d''^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} + d''^{2} e_\mathrm{pt}^{4} n^{4} + 4 d'' d_\mathrm{car} e_\mathrm{car}^{3} e_\mathrm{pt} n - 10 d'' d_\mathrm{car} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2}}{ + 8 d'' d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} - 2 d'' d_\mathrm{car} e_\mathrm{pt}^{4} n^{4} + 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{3} \sqrt{\splitfrac{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2}}{ \splitfrac{+ d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n}{ - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}}}} - 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{2} e_\mathrm{pt} n \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} - 2 d_\mathrm{car}^{2} e_\mathrm{car}^{4} + 4 d_\mathrm{car}^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} - 4 d_\mathrm{car}^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} + d_\mathrm{car}^{2} e_\mathrm{pt}^{4} n^{4}}\right)}\end{equation}
-
-\begin{equation}\frac{1}{e_\mathrm{pt} n} \sqrt{\frac{1}{4 e_\mathrm{car}^{2} - 4 e_\mathrm{car} e_\mathrm{pt} n + e_\mathrm{pt}^{2} n^{2}} \left(- 4 d''^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} + 4 d''^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} - d''^{2} e_\mathrm{pt}^{4} n^{4} - 4 d'' d_\mathrm{car} e_\mathrm{car}^{3} e_\mathrm{pt} n + 10 d'' d_\mathrm{car} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} - 8 d'' d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} + 2 d'' d_\mathrm{car} e_\mathrm{pt}^{4} n^{4} - 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{3} \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} + 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{2} e_\mathrm{pt} n \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} + 2 d_\mathrm{car}^{2} e_\mathrm{car}^{4} - 4 d_\mathrm{car}^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} + 4 d_\mathrm{car}^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} - d_\mathrm{car}^{2} e_\mathrm{pt}^{4} n^{4}\right)}\end{equation}
-
-\begin{equation}- \frac{1}{e_\mathrm{pt} n} \sqrt{- \frac{1}{4 e_\mathrm{car}^{2} - 4 e_\mathrm{car} e_\mathrm{pt} n + e_\mathrm{pt}^{2} n^{2}} \left(4 d''^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} - 4 d''^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} + d''^{2} e_\mathrm{pt}^{4} n^{4} + 4 d'' d_\mathrm{car} e_\mathrm{car}^{3} e_\mathrm{pt} n - 10 d'' d_\mathrm{car} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} + 8 d'' d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} - 2 d'' d_\mathrm{car} e_\mathrm{pt}^{4} n^{4} - 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{3} \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} + 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{2} e_\mathrm{pt} n \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} - 2 d_\mathrm{car}^{2} e_\mathrm{car}^{4} + 4 d_\mathrm{car}^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} - 4 d_\mathrm{car}^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} + d_\mathrm{car}^{2} e_\mathrm{pt}^{4} n^{4}\right)}\end{equation}
-
-\begin{equation}\frac{1}{e_\mathrm{pt} n} \sqrt{\frac{1}{4 e_\mathrm{car}^{2} - 4 e_\mathrm{car} e_\mathrm{pt} n + e_\mathrm{pt}^{2} n^{2}} \left(- 4 d''^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} + 4 d''^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} - d''^{2} e_\mathrm{pt}^{4} n^{4} - 4 d'' d_\mathrm{car} e_\mathrm{car}^{3} e_\mathrm{pt} n + 10 d'' d_\mathrm{car} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} - 8 d'' d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} + 2 d'' d_\mathrm{car} e_\mathrm{pt}^{4} n^{4} + 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{3} \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} - 2 d_\mathrm{car}^{\frac{3}{2}} e_\mathrm{car}^{2} e_\mathrm{pt} n \sqrt{- 4 d'' e_\mathrm{car} e_\mathrm{pt} n + 2 d'' e_\mathrm{pt}^{2} n^{2} + d_\mathrm{car} e_\mathrm{car}^{2} + 2 d_\mathrm{car} e_\mathrm{car} e_\mathrm{pt} n - d_\mathrm{car} e_\mathrm{pt}^{2} n^{2}} + 2 d_\mathrm{car}^{2} e_\mathrm{car}^{4} - 4 d_\mathrm{car}^{2} e_\mathrm{car}^{2} e_\mathrm{pt}^{2} n^{2} + 4 d_\mathrm{car}^{2} e_\mathrm{car} e_\mathrm{pt}^{3} n^{3} - d_\mathrm{car}^{2} e_\mathrm{pt}^{4} n^{4}\right)}\end{equation}
 
 The solution was created by the following python script:
 
-@O ../src/isocalc_latex.py
+@O ../bin/scripts/isocalc_latex.py
 @{#!/usr/bin/env python3
 from sympy import *
 dcar = Symbol('d_\mathrm{car}', positive=True, finite=True, real=True)
@@ -85,7 +78,7 @@ for solution in solutions:
   print(latex(ssolution,long_frac_ratio=2,mode='equation'))
 @}
 
-@O ../src/isocalc_cxx.py
+@O ../bin/scripts/isocalc_cxx.py
 @{#!/usr/bin/env python3
 from sympy import *
 dcar = Symbol('d_car', positive=True, finite=True, real=True)
@@ -104,7 +97,7 @@ for solution in solutions:
   print(cxxcode(ssolution))
 @}
 
-@O ../src/isocalc_fortran.py
+@O ../bin/scripts/isocalc_fortran.py
 @{#!/usr/bin/env python3
 from sympy import *
 dcar = Symbol('d_car', positive=True, finite=True, real=True)
