@@ -40,4 +40,6 @@ The aim of this experimental tool is to provide a carpool planner for participan
 
 @i postgis.w
 
+@i core.w
+
 \end{document}
