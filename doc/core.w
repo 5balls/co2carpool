@@ -56,7 +56,7 @@ find_package(CURL REQUIRED)
 # nlohmann json
 find_package(nlohmann_json 3.9.1 REQUIRED)
 
-add_executable(co2carpool main.cpp database.cpp rest.cpp route.cpp)
+add_executable(co2carpool main.cpp database.cpp rest.cpp route.cpp sumo/emissions/PollutantsInterface.cpp sumo/emissions/HelpersHBEFA4.cpp)
 target_link_libraries(co2carpool PRIVATE PostgreSQL::PostgreSQL ${CURL_LIBRARIES} nlohmann_json::nlohmann_json)
 @}
 
@@ -86,6 +86,8 @@ int main(){
     std::shared_ptr<rest> restApi = std::make_shared<rest>();
     std::shared_ptr<task> cologne_gss_route = std::make_shared<route>(restApi, locations::cologne_central_station, locations::tuebingen_gss_school);
     cologne_gss_route->execute();
+    //std::cout << emissionClass << " " << PollutantsInterface::getName(emissionClass) << "\n";
+    //std::cout << (PollutantsInterface::compute(emissionClass,PollutantsInterface::EmissionType::CO2 , 100, 0, 0) / 1000 ) * 60 * 60;
     return EXIT_SUCCESS;
 }
 @}
@@ -251,6 +253,7 @@ This provides a wrapper for the rest calls of ``graphhopper'' for the route calc
 
 #include "task.h"
 #include "rest.h"
+#include "sumo/emissions/PollutantsInterface.h"
 
 class route : public task{
 public:
@@ -258,11 +261,22 @@ public:
         double lat;
         double lon;
     };
+    struct instruction {
+        double distance;
+        std::vector<unsigned int> interval;
+        int sign;
+        std::string street_name;
+        std::string text;
+        unsigned int time;
+        double co2;
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(instruction, distance, interval, sign, street_name, text, time);
+    };
     route(std::shared_ptr<rest> restApi, const coordinate& from, const coordinate& to);
 
     virtual bool isCompleted(void) const override;
     virtual unsigned int priority(void) const override;
     virtual void execute(void) override;
+    double co2(std::string carClass);
 private:
     coordinate from;
     coordinate to;
@@ -270,6 +284,7 @@ private:
     unsigned int prio;
     std::shared_ptr<rest> restApi;
     std::vector<coordinate> routePath;
+    std::vector<instruction> instructions;
 };
 
 #endif
@@ -302,17 +317,38 @@ void route::execute(void) {
     request["instructions"] = true;
     request["points_encoded"] = false;
     request["debug"] = true;
-    request["details"] = {"max_speed", "distance", "time"};
+    //request["details"] = {"max_speed", "distance", "time"};
+    request["locale"] = "de";
     nlohmann::json result;
-    std::cout << "Request " << request.dump(4) << "\n";
     result = restApi->post("http://localhost:8989/route", request.dump().c_str()); 
     for(const auto& coordinate: result["paths"][0]["points"]["coordinates"]){
         routePath.push_back({coordinate[1],coordinate[0]});
     }
-    std::cout << "Read in " << routePath.size() << " coordinates\n";
-    std::cout << "Result: \n" << result.dump(4) << "\n";
+    instructions = result["paths"][0]["instructions"].get<std::vector<instruction> >();
+    std::cout << "Read in " << routePath.size() << " coordinates and " << instructions.size() << " instructions \n";
+    co2("HBEFA4/PC_petrol_Euro-4");
 }
+    
+double route::co2(std::string carClass){
+    SUMOEmissionClass emissionClass = PollutantsInterface::getClassByName(carClass);
+    double total_co2 = 0;
+    double total_distance = 0;
+    for(auto& instruction: instructions){
+        if(instruction.time == 0) continue;
+        // distance is in m, time in msec
+        // speed in km/h
+        double speed = (instruction.distance / ((double)instruction.time / 1000.0)) * 3.6;
+        // FIXME acceleration
+        // compute gives CO2 in mg/s
+        instruction.co2 = (PollutantsInterface::compute(emissionClass,PollutantsInterface::EmissionType::CO2 , speed, 0, 0) / 1000.0) * ((double)instruction.time / 1000.0);
+        total_co2 += instruction.co2;
+        total_distance += instruction.distance;
+    }
+    std::cout << "Total CO2: " << total_co2/1000.0 << "kg\n";
+    std::cout << "Total distance: " << total_distance/1000.0 << "km\n";
+    return total_co2;
 
+}
 @}
 
 \subsection{locations}
