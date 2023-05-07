@@ -1,3 +1,5 @@
 *.py
 *.sql
 *.sh
+*.tex
+*.gp

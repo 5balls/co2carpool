@@ -1,4 +1,4 @@
-% Copyright 2022 Florian Pesth
+% Copyright 2023 Florian Pesth
 %
 % This file is part of co2carpool.
 %
@@ -16,10 +16,11 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 \documentclass[a4paper]{article}
-\usepackage{hyperref}
+\usepackage[colorlinks=true]{hyperref}
 \usepackage{listings}
 \usepackage[margin=2cm]{geometry}
 \usepackage{tikz}
+\usepackage{gnuplot-lua-tikz}
 \usepackage{mathtools}
 \usetikzlibrary{quotes,angles,positioning}
 

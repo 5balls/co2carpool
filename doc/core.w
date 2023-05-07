@@ -277,6 +277,7 @@ public:
     virtual unsigned int priority(void) const override;
     virtual void execute(void) override;
     double co2(std::string carClass);
+    void isoemission(void);
 private:
     coordinate from;
     coordinate to;
@@ -327,6 +328,10 @@ void route::execute(void) {
     instructions = result["paths"][0]["instructions"].get<std::vector<instruction> >();
     std::cout << "Read in " << routePath.size() << " coordinates and " << instructions.size() << " instructions \n";
     co2("HBEFA4/PC_petrol_Euro-4");
+}
+
+void route::isoemission(void) {
+    nlohmann::json request;
 }
     
 double route::co2(std::string carClass){
