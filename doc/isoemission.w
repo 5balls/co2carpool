@@ -129,6 +129,18 @@ d'=& \frac{1}{e_\mathrm{pt}} \left\{\frac{1}{4 e_\mathrm{car}^{2} - 4 e_\mathrm{
 
 Equations \ref{eq:iso1} (page \pageref{eq:iso1}) and \ref{eq:iso3} (page \pageref{eq:iso3}) are not solutions we are interested in as we look for a positive solution. Equation \ref{eq:iso4} (page \pageref{eq:iso4}) does not seem to be valid, but equation \ref{eq:iso2} (page \pageref{eq:iso2}) seems to be a valid solution.
 
+If we set $d'$ to zero we get the following equation:
+
+\begin{equation}d_\mathrm{car} e_\mathrm{car} + d_\mathrm{car} e_\mathrm{pt} \left(n - 1\right) - e_\mathrm{car} \left|{d''}\right| - e_\mathrm{car} \left|{d'' - d_\mathrm{car}}\right| + e_\mathrm{pt} \left|{d'' - d_\mathrm{car}}\right|\end{equation}
+
+And solving for $d''$ we get the following solutions:
+
+\begin{equation}d''=\begin{cases} - \frac{d_\mathrm{car}}{e_\mathrm{pt}} \left(2 e_\mathrm{car} + e_\mathrm{pt} \left(n - 2\right)\right) & \text{for}\: \frac{d_\mathrm{car}}{e_\mathrm{pt}} \left(- 2 e_\mathrm{car} - e_\mathrm{pt} n + e_\mathrm{pt}\right) \geq 0 \wedge \frac{d_\mathrm{car}}{e_\mathrm{pt}} \left(2 e_\mathrm{car} + e_\mathrm{pt} \left(n - 2\right)\right) > 0 \\\text{NaN} & \text{otherwise} \end{cases}\end{equation}
+
+\begin{equation}d''=\begin{cases} \frac{d_\mathrm{car}}{2 e_\mathrm{car} - e_\mathrm{pt}} \left(2 e_\mathrm{car} + e_\mathrm{pt} n - 2 e_\mathrm{pt}\right) & \text{for}\: \frac{d_\mathrm{car}}{2 e_\mathrm{car} - e_\mathrm{pt}} \left(2 e_\mathrm{car} + e_\mathrm{pt} n - 2 e_\mathrm{pt}\right) \geq 0 \wedge \frac{d_\mathrm{car} e_\mathrm{pt} \left(n - 1\right)}{2 e_\mathrm{car} - e_\mathrm{pt}} \geq 0 \\\text{NaN} & \text{otherwise} \end{cases}\end{equation}
+
+\begin{equation}d''=\begin{cases} - \frac{d_\mathrm{car} e_\mathrm{pt} n}{2 e_\mathrm{car} - e_\mathrm{pt}} & \text{for}\: \frac{d_\mathrm{car} e_\mathrm{pt} n}{2 e_\mathrm{car} - e_\mathrm{pt}} > 0 \wedge \frac{d_\mathrm{car}}{2 e_\mathrm{car} - e_\mathrm{pt}} \left(- 2 e_\mathrm{car} - e_\mathrm{pt} n + e_\mathrm{pt}\right) < 0 \\\text{NaN} & \text{otherwise} \end{cases}\end{equation}
+
 The solution was created by the following python script:
 
 @d Solve isoemission equation
@@ -168,19 +180,25 @@ for solution in solutions:
   print(latex(ssolution,long_frac_ratio=2,mode='equation'))
 @}
 
+@d Solve isoemission null equation
+@{dpt = sqrt((dcar-ddd)**2)
+dcpt = sqrt(ddd**2)
+n = Symbol('n', positive=True, integer=True, nonzero=True)
+solutions = solve(ecar*dcar+ept*dpt+(n-1)*ept*dcar-ecar*dcpt-ecar*dpt,ddd)
+@}
+
+
 @O ../bin/scripts/isocalc_null_latex.py
 @{#!/usr/bin/env python3
 from sympy import *
-@<Isoemission symbols for C++ and fortran@>
-@<Solve isoemission equation@>
-ssolution = simplify(solutions[1])
-print(latex(ssolution,long_frac_ratio=2,mode='equation'))
-solution_null = solve(ssolution,ddd)
-ssolution_null = simplify(solution_null)
-print("")
-print(latex(ssolution,long_frac_ratio=2,mode='equation'))
+@<Isoemission symbols for \LaTeX@>
+@<Solve isoemission null equation@>
+print(latex(ecar*dcar+ept*dpt+(n-1)*ept*dcar-ecar*dcpt-ecar*dpt,long_frac_ratio=2,mode='equation'))
+for solution in solutions:
+  ssolution = simplify(solution)
+  print("")
+  print(latex(ssolution,long_frac_ratio=2,mode='equation'))
 @}
-
 
 @O ../bin/scripts/isocalc_cxx.py
 @{#!/usr/bin/env python3
@@ -267,4 +285,5 @@ plot [-250:550][-400:400] \
  '+' u (0):(0) t "Start of route" w p ls 3,\
  '+' u (377):(0) t "Destination of route" w p ls 4
 @}
+
 
