@@ -135,11 +135,13 @@ If we set $d'$ to zero we get the following equation:
 
 And solving for $d''$ we get the following solutions:
 
-\begin{equation}d''=\begin{cases} - \frac{d_\mathrm{car}}{e_\mathrm{pt}} \left(2 e_\mathrm{car} + e_\mathrm{pt} \left(n - 2\right)\right) & \text{for}\: \frac{d_\mathrm{car}}{e_\mathrm{pt}} \left(- 2 e_\mathrm{car} - e_\mathrm{pt} n + e_\mathrm{pt}\right) \geq 0 \wedge \frac{d_\mathrm{car}}{e_\mathrm{pt}} \left(2 e_\mathrm{car} + e_\mathrm{pt} \left(n - 2\right)\right) > 0 \\\text{NaN} & \text{otherwise} \end{cases}\end{equation}
+\begin{equation}d''=\begin{cases} - \frac{d_\mathrm{car}}{e_\mathrm{pt}} \left(2 e_\mathrm{car} + e_\mathrm{pt} \left(n - 2\right)\right) & \text{for}\: \frac{d_\mathrm{car}}{e_\mathrm{pt}} \left(- 2 e_\mathrm{car} - e_\mathrm{pt} n + e_\mathrm{pt}\right) \geq 0 \wedge \frac{d_\mathrm{car}}{e_\mathrm{pt}} \left(2 e_\mathrm{car} + e_\mathrm{pt} \left(n - 2\right)\right) > 0 \\\text{NaN} & \text{otherwise} \end{cases}\label{eq:isonull1}\end{equation}
 
-\begin{equation}d''=\begin{cases} \frac{d_\mathrm{car}}{2 e_\mathrm{car} - e_\mathrm{pt}} \left(2 e_\mathrm{car} + e_\mathrm{pt} n - 2 e_\mathrm{pt}\right) & \text{for}\: \frac{d_\mathrm{car}}{2 e_\mathrm{car} - e_\mathrm{pt}} \left(2 e_\mathrm{car} + e_\mathrm{pt} n - 2 e_\mathrm{pt}\right) \geq 0 \wedge \frac{d_\mathrm{car} e_\mathrm{pt} \left(n - 1\right)}{2 e_\mathrm{car} - e_\mathrm{pt}} \geq 0 \\\text{NaN} & \text{otherwise} \end{cases}\end{equation}
+\begin{equation}d''=\begin{cases} \frac{d_\mathrm{car}}{2 e_\mathrm{car} - e_\mathrm{pt}} \left(2 e_\mathrm{car} + e_\mathrm{pt} n - 2 e_\mathrm{pt}\right) & \text{for}\: \frac{d_\mathrm{car}}{2 e_\mathrm{car} - e_\mathrm{pt}} \left(2 e_\mathrm{car} + e_\mathrm{pt} n - 2 e_\mathrm{pt}\right) \geq 0 \wedge \frac{d_\mathrm{car} e_\mathrm{pt} \left(n - 1\right)}{2 e_\mathrm{car} - e_\mathrm{pt}} \geq 0 \\\text{NaN} & \text{otherwise} \end{cases}\label{eq:isonull2}\end{equation}
 
-\begin{equation}d''=\begin{cases} - \frac{d_\mathrm{car} e_\mathrm{pt} n}{2 e_\mathrm{car} - e_\mathrm{pt}} & \text{for}\: \frac{d_\mathrm{car} e_\mathrm{pt} n}{2 e_\mathrm{car} - e_\mathrm{pt}} > 0 \wedge \frac{d_\mathrm{car}}{2 e_\mathrm{car} - e_\mathrm{pt}} \left(- 2 e_\mathrm{car} - e_\mathrm{pt} n + e_\mathrm{pt}\right) < 0 \\\text{NaN} & \text{otherwise} \end{cases}\end{equation}
+\begin{equation}d''=\begin{cases} - \frac{d_\mathrm{car} e_\mathrm{pt} n}{2 e_\mathrm{car} - e_\mathrm{pt}} & \text{for}\: \frac{d_\mathrm{car} e_\mathrm{pt} n}{2 e_\mathrm{car} - e_\mathrm{pt}} > 0 \wedge \frac{d_\mathrm{car}}{2 e_\mathrm{car} - e_\mathrm{pt}} \left(- 2 e_\mathrm{car} - e_\mathrm{pt} n + e_\mathrm{pt}\right) < 0 \\\text{NaN} & \text{otherwise} \end{cases}\label{eq:isonull3}\end{equation}
+
+From this equations, equation \ref{eq:isonull2} (page \pageref{eq:isonull2}) and equation \ref{eq:isonull3} (page \pageref{eq:isonull3}) are valid solutions.
 
 The solution was created by the following python script:
 
@@ -222,6 +224,17 @@ for solution in solutions:
   print(fcode(ssolution,source_format='free'))
 @}
 
+@O ../bin/scripts/isocalc_null_fortran.py
+@{#!/usr/bin/env python3
+from sympy import *
+@<Isoemission symbols for C++ and fortran@>
+@<Solve isoemission null equation@>
+for solution in solutions:
+  ssolution = simplify(solution)
+  print("")
+  print(fcode(ssolution,source_format='free',standard=95))
+@}
+
 
 
 @d Isoemission C++ equation 1
@@ -260,6 +273,10 @@ sqrt((-2*d_car**(3.0/2.0)*e_car**3*sqrt(d_car*e_car**2 + 2*d_car* \
       e_pt**3 + 2*d_car*d_doubledash*e_pt**4 - 4*d_doubledash**2*e_car \
       **2*e_pt**2 + 4*d_doubledash**2*e_car*e_pt**3 - d_doubledash**2* \
       e_pt**4)/(4*e_car**2 - 4*e_car*e_pt + e_pt**2))/e_pt
+ddd0(n,d_car,e_car,e_pt)=\
+d_car*(2*e_car + e_pt*n - 2*e_pt)/(2*e_car - e_pt)
+ddd1(n,d_car,e_car,e_pt)=\
+-d_car*e_pt*n/(2*e_car - e_pt)
 @}
 
 @O ../bin/scripts/isoemissions.gp
@@ -276,14 +293,21 @@ set ylabel "Distance / km"
 plot [-250:550][-400:400] \
  dd1(x,4,377,160,38) t "Driver and 4 passengers" lt rgb "#00FF00" w filledcurves y1=0,\
  -dd1(x,4,377,160,38) notitle lt rgb "#00FF00" w filledcurves y1=0,\
+ '+' u (ddd0(4,377,160,38)):(0) notitle w p ls 5,\
+ '+' u (ddd1(4,377,160,38)):(0) notitle w p ls 5,\
  dd1(x,3,377,160,38) t "Driver and 3 passengers" lt rgb "#66FF66" w filledcurves y1=0,\
  -dd1(x,3,377,160,38) notitle lt rgb "#66FF66" w filledcurves y1=0,\
+ '+' u (ddd0(3,377,160,38)):(0) notitle w p ls 5,\
+ '+' u (ddd1(3,377,160,38)):(0) notitle w p ls 5,\
  dd1(x,2,377,160,38) t "Driver and 2 passengers" lt rgb "#99FF99" w filledcurves y1=0,\
  -dd1(x,2,377,160,38) notitle lt rgb "#99FF99" w filledcurves y1=0,\
+ '+' u (ddd0(2,377,160,38)):(0) notitle w p ls 5,\
+ '+' u (ddd1(2,377,160,38)):(0) notitle w p ls 5,\
  x>377? NaN : dd1(x,1,377,160,38) t "Driver and 1 passenger" lt rgb "#BBFFBB" w filledcurves y1=0,\
  x>377? NaN : -dd1(x,1,377,160,38) notitle lt rgb "#BBFFBB" w filledcurves y1=0,\
+ '+' u (ddd0(1,377,160,38)):(0) t "Zero points" w p ls 5,\
+ '+' u (ddd1(1,377,160,38)):(0) notitle w p ls 5,\
  '+' u (0):(0) t "Start of route" w p ls 3,\
  '+' u (377):(0) t "Destination of route" w p ls 4
 @}
-
 
