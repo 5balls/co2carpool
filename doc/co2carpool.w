@@ -43,4 +43,6 @@ The aim of this experimental tool is to provide a carpool planner for participan
 
 @i core.w
 
+@i graphhopper.w
+
 \end{document}
