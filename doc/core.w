@@ -86,8 +86,6 @@ int main(){
     std::shared_ptr<rest> restApi = std::make_shared<rest>();
     std::shared_ptr<task> cologne_gss_route = std::make_shared<route>(restApi, locations::cologne_central_station, locations::tuebingen_gss_school);
     cologne_gss_route->execute();
-    //std::cout << emissionClass << " " << PollutantsInterface::getName(emissionClass) << "\n";
-    //std::cout << (PollutantsInterface::compute(emissionClass,PollutantsInterface::EmissionType::CO2 , 100, 0, 0) / 1000 ) * 60 * 60;
     return EXIT_SUCCESS;
 }
 @}
@@ -175,6 +173,7 @@ public:
     rest(void);
     ~rest(void);
     nlohmann::json post(const char* url, const char* options);
+    nlohmann::json get(const char* url, const char* options);
 private:
     CURL* curl;
     CURLcode result;
@@ -238,6 +237,21 @@ nlohmann::json rest::post(const char* url, const char* options){
     return resultJson;
 }
 
+nlohmann::json rest::get(const char* url, const char* options){
+    curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
+    //curl_easy_setopt(curl, CURLOPT_GETFIELDS, options);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeIntoStdString); 
+    std::string resultString;
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resultString);
+    result = curl_easy_perform(curl);
+    if(result != CURLE_OK)
+        std::cout << "Error in get request for url \"" << url << "\", options \"" << options << "\", error by curl is \"" << curl_easy_strerror(result) << "\"\n";
+    nlohmann::json resultJson = nlohmann::json::parse(resultString);
+    return resultJson;
+}
+
+
 @}
 
 \subsection{route class}
@@ -276,6 +290,8 @@ public:
     virtual bool isCompleted(void) const override;
     virtual unsigned int priority(void) const override;
     virtual void execute(void) override;
+    void carRouting(void);
+    void publicTransportRouting(void);
     double co2(std::string carClass);
     void isoemission(void);
 private:
@@ -296,6 +312,7 @@ private:
 @{
 
 #include "route.h"
+#include "locations.h"
 
 route::route(std::shared_ptr<rest> l_restApi, const coordinate& l_from, const coordinate& l_to):
     restApi(l_restApi), from(l_from), to(l_to), routeCalculated(false), prio(1)
@@ -311,7 +328,12 @@ unsigned int route::priority(void) const{
     return prio;
 }
 
-void route::execute(void) {
+void route::execute(void){
+    publicTransportRouting();
+} 
+
+void route::carRouting(void) {
+    std::cout << "Car routing\n";
     nlohmann::json request;
     request["points"] = {{from.lon, from.lat}, {to.lon, to.lat}};
     request["profile"] = "car";
@@ -322,6 +344,29 @@ void route::execute(void) {
     request["locale"] = "de";
     nlohmann::json result;
     result = restApi->post("http://localhost:8989/route", request.dump().c_str()); 
+    for(const auto& coordinate: result["paths"][0]["points"]["coordinates"]){
+        routePath.push_back({coordinate[1],coordinate[0]});
+    }
+    instructions = result["paths"][0]["instructions"].get<std::vector<instruction> >();
+    std::cout << "Read in " << routePath.size() << " coordinates and " << instructions.size() << " instructions \n";
+    co2("HBEFA4/PC_petrol_Euro-4");
+}
+
+void route::publicTransportRouting(void){
+    std::cout << "Public Transport routing\n";
+    nlohmann::json request;
+    coordinate from_pt = locations::berlin_central_station;
+    coordinate to_pt = locations::berlin_east_station;
+    request["points"] = {{from_pt.lon, from_pt.lat}, {to_pt.lon, to_pt.lat}};
+    request["profile"] = "foot";
+    request["instructions"] = true;
+    request["points_encoded"] = false;
+    request["debug"] = true;
+    //request["details"] = {"max_speed", "distance", "time"};
+    request["locale"] = "de";
+    nlohmann::json result;
+    result = restApi->get("http://localhost:8989/route-pt", request.dump().c_str()); 
+    std::cout << "Route result:\n" << result.dump(4) << "\n";
     for(const auto& coordinate: result["paths"][0]["points"]["coordinates"]){
         routePath.push_back({coordinate[1],coordinate[0]});
     }
@@ -370,6 +415,8 @@ This is just a list of locations for debugging purposes.
 namespace locations{
     const route::coordinate cologne_central_station = {50.9427839, 6.9590705};
     const route::coordinate tuebingen_gss_school = {48.5425790, 9.0571074};
+    const route::coordinate berlin_central_station = {52.5249451, 13.3696614};
+    const route::coordinate berlin_east_station = {52.5103817, 13.4349112};
 };
 
 #endif
