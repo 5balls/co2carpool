@@ -173,7 +173,7 @@ public:
     rest(void);
     ~rest(void);
     nlohmann::json post(const char* url, const char* options);
-    nlohmann::json get(const char* url, const char* options);
+    nlohmann::json get(const char* url, std::vector<std::pair<std::string, std::string> > options);
 private:
     CURL* curl;
     CURLcode result;
@@ -237,17 +237,27 @@ nlohmann::json rest::post(const char* url, const char* options){
     return resultJson;
 }
 
-nlohmann::json rest::get(const char* url, const char* options){
-    curl_easy_setopt(curl, CURLOPT_URL, url);
+nlohmann::json rest::get(const char* l_url, std::vector<std::pair<std::string, std::string> > options){
     curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
+    CURLU *url = curl_url();
+    curl_url_set(url, CURLUPART_URL, l_url, 0);
+    for(const auto& option: options)
+        curl_url_set(url, CURLUPART_QUERY, (option.first + "=" + option.second).c_str(), CURLU_APPENDQUERY);
+    curl_easy_setopt(curl, CURLOPT_CURLU, url);
     //curl_easy_setopt(curl, CURLOPT_GETFIELDS, options);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeIntoStdString); 
     std::string resultString;
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resultString);
     result = curl_easy_perform(curl);
     if(result != CURLE_OK)
-        std::cout << "Error in get request for url \"" << url << "\", options \"" << options << "\", error by curl is \"" << curl_easy_strerror(result) << "\"\n";
-    nlohmann::json resultJson = nlohmann::json::parse(resultString);
+        std::cout << "Error in get request for url \"" << url << "\", error by curl is \"" << curl_easy_strerror(result) << "\"\n";
+    std::cout << "Result as string:\n" << resultString << "\n";
+    nlohmann::json resultJson;
+    try{
+        resultJson = nlohmann::json::parse(resultString);
+    } catch(...){
+        std::cout << "Could not parse json\n";
+    }
     return resultJson;
 }
 
@@ -354,24 +364,36 @@ void route::carRouting(void) {
 
 void route::publicTransportRouting(void){
     std::cout << "Public Transport routing\n";
-    nlohmann::json request;
-    coordinate from_pt = locations::berlin_central_station;
-    coordinate to_pt = locations::berlin_east_station;
-    request["points"] = {{from_pt.lon, from_pt.lat}, {to_pt.lon, to_pt.lat}};
-    request["profile"] = "foot";
-    request["instructions"] = true;
-    request["points_encoded"] = false;
-    request["debug"] = true;
-    //request["details"] = {"max_speed", "distance", "time"};
-    request["locale"] = "de";
+//    coordinate from_pt = locations::cologne_central_station;
+//    coordinate to_pt = locations::berlin_south_cross_station;
+    coordinate from_pt = locations::stuttgart_central_station;
+    coordinate to_pt = locations::berlin_central_station;
+    std::vector<std::pair<std::string, std::string> > request = {
+        {"point", std::to_string(from_pt.lat) + "," + std::to_string(from_pt.lon)},
+        {"point", std::to_string(to_pt.lat) + "," + std::to_string(to_pt.lon)},
+        {"pt.earliest_departure_time", "2023-05-13T04:48:37Z"},
+        {"pt.arrive_by", "false"},
+        {"locale","de"},
+        {"profile","pt"},
+        {"pt.profile","false"},
+        //{"pt.access_profile","foot"},
+        //{"pt.egress_profile","foot"},
+        {"pt.profile_duration","PT1200M"},
+        {"pt.limit_street_time","PT300M"},
+        {"pt.ignore_transfers","false"}
+    };
     nlohmann::json result;
-    result = restApi->get("http://localhost:8989/route-pt", request.dump().c_str()); 
-    std::cout << "Route result:\n" << result.dump(4) << "\n";
-    for(const auto& coordinate: result["paths"][0]["points"]["coordinates"]){
-        routePath.push_back({coordinate[1],coordinate[0]});
+    try{
+        result = restApi->get("http://localhost:8989/route", request); 
+        std::cout << "Route result:\n" << result.dump(4) << "\n";
+        for(const auto& coordinate: result["paths"][0]["points"]["coordinates"]){
+            routePath.push_back({coordinate[1],coordinate[0]});
+        }
+        instructions = result["paths"][0]["instructions"].get<std::vector<instruction> >();
+        std::cout << "Read in " << routePath.size() << " coordinates and " << instructions.size() << " instructions \n";
+    } catch (...){
+        std::cout << "Could not parse json result!\n";
     }
-    instructions = result["paths"][0]["instructions"].get<std::vector<instruction> >();
-    std::cout << "Read in " << routePath.size() << " coordinates and " << instructions.size() << " instructions \n";
     co2("HBEFA4/PC_petrol_Euro-4");
 }
 
@@ -417,6 +439,8 @@ namespace locations{
     const route::coordinate tuebingen_gss_school = {48.5425790, 9.0571074};
     const route::coordinate berlin_central_station = {52.5249451, 13.3696614};
     const route::coordinate berlin_east_station = {52.5103817, 13.4349112};
+    const route::coordinate berlin_south_cross_station = {52.4765716, 13.3660396};
+    const route::coordinate stuttgart_central_station = {48.7856099, 9.1833959};
 };
 
 #endif
