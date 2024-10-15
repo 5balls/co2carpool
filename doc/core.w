@@ -155,7 +155,7 @@ database::~database(void){
 The rest class uses libcurl to send rest requests to graphhopper.
 
 \begin{lstlisting}
-apt-get install libcurl4
+apt-get install libcurl4 libcurl4-openssl-dev nlohmann-json3-dev
 \end{lstlisting}
 
 @O ../src/rest.h -d

@@ -25,24 +25,32 @@ First a role ``co2carpool'' for accessing the database needs to be created.
 
 (On debian you need to be user ``postgres'' to start psql and execute this command).
 
-After this it is most easy to create a user ``co2carpool'' as well.
+After this it is most easy to create a user ``co2carpool'' as well. With this user on the command line enter:
 
 \begin{lstlisting}
 createdb
 \end{lstlisting}
 
+and this will create the database co2carpool.
+
 This will create a database with the name ``co2carpool''.
 
-As superuser open the database:
+
+Install the postgis extension by
+\begin{lstlisting}
+apt-get install postgis
+\end{lstlisting}
+
+and enable the extension (in psql):
+
+As database superuser (postgres on debian) open the database:
 
 \begin{lstlisting}
 psql -d co2carpool
 \end{lstlisting}
 
-and enable the postgis extension:
-
 \begin{lstlisting}
-create extension postgis;
+co2carpool=# create extension postgis;
 \end{lstlisting}
 
 In the database:

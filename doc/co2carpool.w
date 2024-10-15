@@ -35,7 +35,7 @@
 
 \section{Overview}
 
-The aim of this experimental tool is to provide a carpool planner for participants of a juggling convention by suggesting pickups of other people minimizing the total amount of emitted $CO_2$ assuming some people will drive with a car for sure (currently maximum number is 200 people but I will try to make it scalable).
+The aim of this experimental tool is to provide a carpool planner for participants of a juggling convention by suggesting pickups of other people minimizing the total amount of emitted $CO_2$ assuming some people will drive with a car for sure (currently maximum expected number is 200 people but I will try to make it scalable).
 
 @i isoemission.w
 
