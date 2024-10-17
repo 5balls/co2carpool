@@ -4,4 +4,5 @@ cmake_install.cmake
 co2carpool
 Makefile
 test.txt
+config.json
 *.swp

@@ -1,4 +1,4 @@
-% Copyright 2022 Florian Pesth
+% Copyright 2022,2023,2024 Florian Pesth
 %
 % This file is part of co2carpool.
 %
@@ -16,6 +16,19 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 \section{Core program}
+
+\subsection{Configuration}
+
+The configuration is a json file which parts of should be directly usable by the classes.
+
+@O ../src/build/config.json
+@{
+{
+  "rest": {
+    "urls":{"car_router":"https://localhost:8989/route"}
+  }
+}
+@}
 
 \subsection{task class}
 
@@ -79,11 +92,19 @@ Shouldn't be exciting.
 @O ../src/main.cpp -d
 @{
 #include "main.h"
+#include <fstream>
 
 int main(){
     std::cout << "CO2 carpool\n";
+    std::cout << "Load config file...";
+    std::ifstream ifs_config("config.json");
+    nlohmann::json j_config = nlohmann::json::parse(ifs_config);
+    std::cout << j_config["rest"];
+    std::cout << " ok!\n";
+
     database maindb = database();
     std::shared_ptr<rest> restApi = std::make_shared<rest>();
+    *restApi = j_config["rest"];
     std::shared_ptr<task> cologne_gss_route = std::make_shared<route>(restApi, locations::cologne_central_station, locations::tuebingen_gss_school);
     cologne_gss_route->execute();
     return EXIT_SUCCESS;
@@ -164,6 +185,8 @@ apt-get install libcurl4 libcurl4-openssl-dev nlohmann-json3-dev
 #define REST_CLASS
 
 #include <iostream>
+#include <map>
+#include <string>
 
 #include <curl/curl.h>
 #include <nlohmann/json.hpp>
@@ -172,12 +195,14 @@ class rest{
 public:
     rest(void);
     ~rest(void);
-    nlohmann::json post(const char* url, const char* options);
-    nlohmann::json get(const char* url, std::vector<std::pair<std::string, std::string> > options);
+    nlohmann::json post(const std::string& url_ref, const char* options);
+    nlohmann::json get(const std::string& url_ref, std::vector<std::pair<std::string, std::string> > options);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(rest, urls);
 private:
     CURL* curl;
     CURLcode result;
     struct curl_slist *headers;
+    std::map<std::string, std::string> urls;
 };
 
 #endif
@@ -187,8 +212,9 @@ private:
 @{
 
 #include "rest.h"
+#include <fstream>
 
-rest::rest(void):
+rest::rest():
     headers(NULL)
 {
     std::cout << "Initializing CURL...";
@@ -224,7 +250,8 @@ size_t writeIntoStdString(void* ptr, size_t size, size_t nmemb, void* str) {
     return size * nmemb;
 }
 
-nlohmann::json rest::post(const char* url, const char* options){
+nlohmann::json rest::post(const std::string& url_ref, const char* options){
+    const char* url = urls[url_ref].c_str();
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, options);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeIntoStdString); 
@@ -237,7 +264,8 @@ nlohmann::json rest::post(const char* url, const char* options){
     return resultJson;
 }
 
-nlohmann::json rest::get(const char* l_url, std::vector<std::pair<std::string, std::string> > options){
+nlohmann::json rest::get(const std::string& url_ref, std::vector<std::pair<std::string, std::string> > options){
+    const char* l_url = urls[url_ref].c_str();
     curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
     CURLU *url = curl_url();
     curl_url_set(url, CURLUPART_URL, l_url, 0);
@@ -339,7 +367,7 @@ unsigned int route::priority(void) const{
 }
 
 void route::execute(void){
-    publicTransportRouting();
+    carRouting();
 } 
 
 void route::carRouting(void) {
@@ -353,7 +381,7 @@ void route::carRouting(void) {
     //request["details"] = {"max_speed", "distance", "time"};
     request["locale"] = "de";
     nlohmann::json result;
-    result = restApi->post("http://localhost:8989/route", request.dump().c_str()); 
+    result = restApi->post("car_router", request.dump().c_str()); 
     for(const auto& coordinate: result["paths"][0]["points"]["coordinates"]){
         routePath.push_back({coordinate[1],coordinate[0]});
     }
