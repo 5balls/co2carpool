@@ -25,7 +25,7 @@ The configuration is a json file which parts of should be directly usable by the
 @{
 {
   "rest": {
-    "urls":{"car_router":"https://localhost:8989/route"}
+    "urls":{"car_router":"http://localhost:8989/route"}
   }
 }
 @}
@@ -251,15 +251,24 @@ size_t writeIntoStdString(void* ptr, size_t size, size_t nmemb, void* str) {
 }
 
 nlohmann::json rest::post(const std::string& url_ref, const char* options){
-    const char* url = urls[url_ref].c_str();
-    curl_easy_setopt(curl, CURLOPT_URL, url);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, options);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeIntoStdString); 
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+    result = curl_easy_setopt(curl, CURLOPT_URL, urls[url_ref].c_str());
+    if(result != CURLE_OK)
+        std::cout << "Error in curl_easy_setopt for CURLOPT_URL = \"" << urls[url_ref].c_str() << "\" error by curl is \"" << curl_easy_strerror(result) << "\"\n";
+    result = curl_easy_setopt(curl, CURLOPT_POSTFIELDS, options);
+    if(result != CURLE_OK)
+        std::cout << "Error in curl_easy_setopt for CURLOPT_POSTFIELDS = \"" << options << "\" error by curl is \"" << curl_easy_strerror(result) << "\"\n";
+    result = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeIntoStdString); 
+    if(result != CURLE_OK)
+        std::cout << "Error in curl_easy_setopt for CURLOPT_WRITEFUNCTION = \"" << writeIntoStdString << "\" error by curl is \"" << curl_easy_strerror(result) << "\"\n";
     std::string resultString;
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resultString);
+    result = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resultString);
+    if(result != CURLE_OK)
+        std::cout << "Error in curl_easy_setopt for CURLOPT_WRITEDATA = \"" << &resultString << "\" error by curl is \"" << curl_easy_strerror(result) << "\"\n";
     result = curl_easy_perform(curl);
     if(result != CURLE_OK)
-        std::cout << "Error in post request for url \"" << url << "\", options \"" << options << "\", error by curl is \"" << curl_easy_strerror(result) << "\"\n";
+        std::cout << "Error in post request for url \"" << urls[url_ref].c_str() << "\", options \"" << options << "\", error by curl is \"" << curl_easy_strerror(result) << "\"\n";
     nlohmann::json resultJson = nlohmann::json::parse(resultString);
     return resultJson;
 }
