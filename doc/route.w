@@ -25,6 +25,7 @@ This provides a wrapper for the rest calls of ``graphhopper'' for the route calc
 #define ROUTE_CLASS
 
 #include <memory>
+#include <list>
 
 #include "task.h"
 #include "rest.h"
@@ -45,6 +46,16 @@ public:
         unsigned int time;
         double co2;
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(instruction, distance, interval, sign, street_name, text, time);
+    };
+    struct car_request {
+        car_request() : points({}), profile("car"), instruction(true), points_encoded(false), debug(true), locale("de"){};
+        std::list<std::pair<double,double> > points;
+        std::string profile;
+        bool instruction;
+        bool points_encoded;
+        bool debug;
+        std::string locale;
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(car_request, points, profile, instruction, points_encoded, debug, locale);
     };
     route(std::shared_ptr<rest> restApi, const coordinate& from, const coordinate& to);
 
@@ -95,16 +106,11 @@ void route::execute(void){
 
 void route::carRouting(void) {
     std::cout << "Car routing\n";
-    nlohmann::json request;
-    request["points"] = {{from.lon, from.lat}, {to.lon, to.lat}};
-    request["profile"] = "car";
-    request["instructions"] = true;
-    request["points_encoded"] = false;
-    request["debug"] = true;
-    //request["details"] = {"max_speed", "distance", "time"};
-    request["locale"] = "de";
+    car_request request;
+    request.points = {{from.lon, from.lat}, {to.lon, to.lat}};
+    nlohmann::json j_request = request;
     nlohmann::json result;
-    result = restApi->post("car_router", request.dump().c_str()); 
+    result = restApi->post("car_router", j_request.dump().c_str()); 
     for(const auto& coordinate: result["paths"][0]["points"]["coordinates"]){
         routePath.push_back({coordinate[1],coordinate[0]});
     }
