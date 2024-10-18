@@ -10,7 +10,7 @@ The code is written in a literal programming language nuweb, which needs to be c
 
 .. code::
 
-   nuweb co2carpool.w
+   nuweb -lr co2carpool.w
 
 This will generate the source files and a latex file. If you have installed all dependencies you can also generate the documentation with
 

@@ -15,19 +15,16 @@
 % You should have received a copy of the GNU Affero General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-\section{Core program}
+\subsection{Configuration}
 
-@i config.w
+The configuration is a json file which parts of should be directly usable by the classes.
 
-@i task.w
-
-@i cmake.w
-
-@i main.w
-
-@i database.w
-
-@i rest.w
-
-@i route.w
+@O ../src/build/config.json
+@{
+{
+  "rest": {
+    "urls":{"car_router":"http://localhost:8989/route"}
+  }
+}
+@}
 

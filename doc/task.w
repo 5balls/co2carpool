@@ -15,19 +15,23 @@
 % You should have received a copy of the GNU Affero General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-\section{Core program}
+\subsection{task class}
 
-@i config.w
+The task class shall be used as a basis for other classes to schedule tasks.
 
-@i task.w
+@O ../src/task.h -d
+@{
+#ifndef TASK_CLASS
+#define TASK_CLASS
 
-@i cmake.w
+class task
+{
+public:
+    virtual bool isCompleted(void) const = 0;
+    virtual unsigned int priority(void) const = 0;
+    virtual void execute(void) = 0;
+};
+#endif // TASK_CLASS
+@}
 
-@i main.w
-
-@i database.w
-
-@i rest.w
-
-@i route.w
 
