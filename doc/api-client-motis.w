@@ -17,7 +17,7 @@
 
 \subsubsection{Motis API}
 
-@O ../src/api-client-motis.h
+@O ../src/api-client-motis.h -d
 @{
 #include <string>
 #include <vector>
@@ -36,14 +36,14 @@ struct Place {
     long int departure;
     std::string scheduledTrack;
     std::string track;
-    VertexType vertexType;
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_ONLY_SERIALIZE(Place, name, stopId, lat, lon, level, arrivalDelay, departureDelay, arrival, departure, scheduledTrack, track, vertexType);
+    std::string vertexType;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Place, name, stopId, lat, lon, level, arrivalDelay, departureDelay, arrival, departure, scheduledTrack, track, vertexType);
 };
 
 struct EncodedPolyline{
     std::string points;
     long int length;
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_ONLY_SERIALIZE(EncodedPolyline, points, length);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(EncodedPolyline, points, length);
 };
 
 struct LevelEncodedPolyline {
@@ -51,7 +51,7 @@ struct LevelEncodedPolyline {
     double toLevel;
     long int osmWay;
     EncodedPolyline polyline;
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_ONLY_SERIALIZE(LevelEncodedPolyline, fromLevel, toLevel, osmWay, polyline);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(LevelEncodedPolyline, fromLevel, toLevel, osmWay, polyline);
 };
 
 struct StepInstruction {
@@ -64,7 +64,7 @@ struct StepInstruction {
     bool area;
     double lon;
     double lat;
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_ONLY_SERIALIZE(StepInstruction, relativeDirection, absoluteDirection, distance, streetName, exit, stayOn, area, lon, lat);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(StepInstruction, relativeDirection, absoluteDirection, distance, streetName, exit, stayOn, area, lon, lat);
 };
 
 struct Leg {
@@ -96,8 +96,8 @@ struct Leg {
     EncodedPolyline legGeometry;
     std::vector<LevelEncodedPolyline> legGeometryWithLevels;
     std::vector<StepInstruction> steps;
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_ONLY_SERIALIZE(Leg, mode, from, to, duration, startTime, endTime, departureDelay, arrivalDelay, realTime, distance, interlineWithPreviousLeg, route, headsign, agencyName, agencyUrl, routeColor, routeTextColor, routeType, routeId, agencyId, tripId, serviceDate, routeShortName, source, intermediateStops, legGeometry, legGeometryWithLevels, steps);
-;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Leg, mode, from, to, duration, startTime, endTime, departureDelay, arrivalDelay, realTime, distance, interlineWithPreviousLeg, route, headsign, agencyName, agencyUrl, routeColor, routeTextColor, routeType, routeId, agencyId, tripId, serviceDate, routeShortName, source, intermediateStops, legGeometry, legGeometryWithLevels, steps);
+};
 
 struct Itinerary {
     long int duration;
@@ -109,11 +109,7 @@ struct Itinerary {
     long int walkDistance;
     long int transfers;
     std::vector<Leg> legs;
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_ONLY_SERIALIZE(Itinerary, duration, startTime, endTime, walkTime, transitTime, waitingTime, walkDistance, transfers, legs);
-};
-
-struct VertexType {
-    // TODO
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Itinerary, duration, startTime, endTime, walkTime, transitTime, waitingTime, walkDistance, transfers, legs);
 };
 
 struct planReply {
@@ -124,8 +120,8 @@ struct planReply {
     std::vector<Itinerary> itineraries;
     std::string previousPageCursor;
     std::string nextPageCursor;
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_ONLY_SERIALIZE(planReply, requestParameters, debugOutput, from, to, itineraries, previousPageCursor, nextPageCursor);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(planReply, requestParameters, debugOutput, from, to, itineraries, previousPageCursor, nextPageCursor);
 };
 
-}
+};
 @}

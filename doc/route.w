@@ -19,6 +19,8 @@
 
 This provides a wrapper for the rest calls of ``graphhopper'' for the route calculation. If needed the routing engine can be replaced here.
 
+@i api-client-motis.w
+
 @O ../src/route.h -d
 @{
 #ifndef ROUTE_CLASS
