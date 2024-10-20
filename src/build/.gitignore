@@ -5,4 +5,5 @@ co2carpool
 Makefile
 test.txt
 config.json
+config.json.template
 *.swp

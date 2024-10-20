@@ -17,13 +17,16 @@
 
 \subsection{Configuration}
 
-The configuration is a json file which parts of should be directly usable by the classes.
+The configuration is a json file which parts of should be directly usable by the classes. Edit according to your settings and rename to \verb|config.json|.
 
-@O ../src/build/config.json
+@O ../src/build/config.json.template
 @{
 {
   "rest": {
-    "urls":{"car_router":"http://localhost:8989/route"}
+    "urls":{
+      "car_router": "http://localhost:8989/route",
+      "pt_router": "http://localhost:8080/api/v1/plan"
+    }
   }
 }
 @}

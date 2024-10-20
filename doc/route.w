@@ -47,6 +47,7 @@ public:
         double co2;
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(instruction, distance, interval, sign, street_name, text, time);
     };
+    // Graphhopper request for car only routing
     struct car_request {
         car_request() : points({}), profile("car"), instruction(true), points_encoded(false), debug(true), locale("de"){};
         std::list<std::pair<double,double> > points;
@@ -56,6 +57,14 @@ public:
         bool debug;
         std::string locale;
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(car_request, points, profile, instruction, points_encoded, debug, locale);
+    };
+    // Motis request for public transport
+    struct pt_request {
+        pt_request() : mode("WALK,TRANSIT"){};
+        std::string fromPlace;
+        std::string toPlace;
+        std::string mode;
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(pt_request, fromPlace, toPlace, mode);
     };
     route(std::shared_ptr<rest> restApi, const coordinate& from, const coordinate& to);
 
@@ -121,37 +130,13 @@ void route::carRouting(void) {
 
 void route::publicTransportRouting(void){
     std::cout << "Public Transport routing\n";
-//    coordinate from_pt = locations::cologne_central_station;
-//    coordinate to_pt = locations::berlin_south_cross_station;
-    coordinate from_pt = locations::stuttgart_central_station;
-    coordinate to_pt = locations::berlin_central_station;
-    std::vector<std::pair<std::string, std::string> > request = {
-        {"point", std::to_string(from_pt.lat) + "," + std::to_string(from_pt.lon)},
-        {"point", std::to_string(to_pt.lat) + "," + std::to_string(to_pt.lon)},
-        {"pt.earliest_departure_time", "2023-05-13T04:48:37Z"},
-        {"pt.arrive_by", "false"},
-        {"locale","de"},
-        {"profile","pt"},
-        {"pt.profile","false"},
-        //{"pt.access_profile","foot"},
-        //{"pt.egress_profile","foot"},
-        {"pt.profile_duration","PT1200M"},
-        {"pt.limit_street_time","PT300M"},
-        {"pt.ignore_transfers","false"}
-    };
+    pt_request request;
+    request.fromPlace = std::to_string(from.lat) + "," + std::to_string(from.lon);
+    request.toPlace = std::to_string(to.lat) + "," + std::to_string(to.lon);
+    nlohmann::json j_request = request;
     nlohmann::json result;
-    try{
-        result = restApi->get("http://localhost:8989/route", request); 
-        std::cout << "Route result:\n" << result.dump(4) << "\n";
-        for(const auto& coordinate: result["paths"][0]["points"]["coordinates"]){
-            routePath.push_back({coordinate[1],coordinate[0]});
-        }
-        instructions = result["paths"][0]["instructions"].get<std::vector<instruction> >();
-        std::cout << "Read in " << routePath.size() << " coordinates and " << instructions.size() << " instructions \n";
-    } catch (...){
-        std::cout << "Could not parse json result!\n";
-    }
-    co2("HBEFA4/PC_petrol_Euro-4");
+    result = restApi->get("pt_router", j_request);
+    std::cout << result.dump();
 }
 
 void route::isoemission(void) {
