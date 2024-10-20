@@ -30,6 +30,7 @@ This provides a wrapper for the rest calls of ``graphhopper'' for the route calc
 #include "task.h"
 #include "rest.h"
 #include "sumo/emissions/PollutantsInterface.h"
+#include "api-client-motis.h"
 
 class route : public task{
 public:
@@ -93,7 +94,6 @@ private:
 
 #endif
 @}
-
 
 @O ../src/route.cpp -d
 @{
