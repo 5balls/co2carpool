@@ -111,6 +111,7 @@ unsigned int route::priority(void) const{
 
 void route::execute(void){
     carRouting();
+    publicTransportRouting();
 } 
 
 void route::carRouting(void) {
