@@ -64,7 +64,13 @@ public:
         std::string fromPlace;
         std::string toPlace;
         std::string mode;
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(pt_request, fromPlace, toPlace, mode);
+        std::vector<std::pair<std::string,std::string> > vec(){
+            return {
+                {"fromPlace",fromPlace},
+                {"toPlace",toPlace},
+                {"mode",mode}
+            };
+        }
     };
     route(std::shared_ptr<rest> restApi, const coordinate& from, const coordinate& to);
 
@@ -134,9 +140,8 @@ void route::publicTransportRouting(void){
     pt_request request;
     request.fromPlace = std::to_string(from.lat) + "," + std::to_string(from.lon);
     request.toPlace = std::to_string(to.lat) + "," + std::to_string(to.lon);
-    nlohmann::json j_request = request;
     nlohmann::json result;
-    result = restApi->get("pt_router", j_request);
+    result = restApi->get("pt_router", request.vec());
     std::cout << result.dump();
 }
 
