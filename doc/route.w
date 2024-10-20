@@ -26,6 +26,8 @@ This provides a wrapper for the rest calls of ``graphhopper'' for the route calc
 #ifndef ROUTE_CLASS
 #define ROUTE_CLASS
 
+# define JSON_DIAGNOSTICS 1
+#include <nlohmann/json.hpp>
 #include <memory>
 #include <list>
 
@@ -121,7 +123,10 @@ void route::execute(void){
     carRouting();
     publicTransportRouting();
 } 
+@}
 
+@O ../src/route.cpp -d
+@{
 void route::carRouting(void) {
     std::cout << "Car routing\n";
     car_request request;
@@ -136,17 +141,51 @@ void route::carRouting(void) {
     std::cout << "Read in " << routePath.size() << " coordinates and " << instructions.size() << " instructions \n";
     co2("HBEFA4/PC_petrol_Euro-4");
 }
+@}
 
+@O ../src/route.cpp -d
+@{
 void route::publicTransportRouting(void){
     std::cout << "Public Transport routing\n";
     pt_request request;
     request.fromPlace = std::to_string(from.lat) + "," + std::to_string(from.lon);
     request.toPlace = std::to_string(to.lat) + "," + std::to_string(to.lon);
-    nlohmann::json result;
-    result = restApi->get("pt_router", request.vec());
-    std::cout << result.dump();
-}
+    try{
+        motis::planReply result = restApi->get("pt_router", request.vec());
+        std::cout << "  Got " << result.itineraries.size() << " itineraries:\n"; 
+        for(const auto& itinerary: result.itineraries){
+            static int i=0;
+            i++;
+            std::cout << "  " << i << " duration: " << itinerary.duration / (60.0*60.0)<< " hours\n";  
+            std::cout << "  " << i << " transfers: " << itinerary.transfers << "\n";  
+            std::cout << "  " << i << " number of legs: " << itinerary.legs.size() << "\n";  
+            int i_leg=0;
+            for(const auto& leg: itinerary.legs){
+                i_leg++;
+                std::cout << "  " << i << " " << i_leg << " mode: " << leg.mode  << "\n";
+                std::cout << "  " << i << " " << i_leg << " " << leg.from.name  << "->" << leg.to.name <<  "\n";
+                std::cout << "  " << i << " " << i_leg << " headsign: " << leg.headsign  << "\n";
+                std::cout << "  " << i << " " << i_leg << " duration: " << leg.duration / 60.0 << " minutes\n";
+                std::cout << "  " << i << " " << i_leg << " " << leg.routeShortName << " " << leg.agencyName << "\n";
+                std::cout << "  " << i << " " << i_leg << " number of intermediateStops: " << leg.intermediateStops.size() << "\n"; 
+                int i_stop = 0;
+                for(const auto& intermediateStop: leg.intermediateStops){
+                    i_stop++;
+                    std::cout << "  " << i << " " << i_leg << " " << i_stop << " " << intermediateStop.name << "\n"; 
+                }
+            }
+        }
+    }
+    catch (const nlohmann::json::exception& e){
+        std::cout << "Could not read back json result from motis:\n  ";
+        std::cout << e.what() << "\n";
+    }
 
+}
+@}
+
+@O ../src/route.cpp -d
+@{
 void route::isoemission(void) {
     nlohmann::json request;
 }

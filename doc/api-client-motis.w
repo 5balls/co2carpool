@@ -113,8 +113,8 @@ struct Itinerary {
 };
 
 struct planReply {
-    std::string requestParameters;
-    std::string debugOutput;
+    nlohmann::json requestParameters;
+    nlohmann::json debugOutput;
     Place from;
     Place to;
     std::vector<Itinerary> itineraries;

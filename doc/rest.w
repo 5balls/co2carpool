@@ -33,6 +33,7 @@ apt-get install libcurl4 libcurl4-openssl-dev nlohmann-json3-dev
 #include <string>
 
 #include <curl/curl.h>
+# define JSON_DIAGNOSTICS 1
 #include <nlohmann/json.hpp>
 
 class rest{
@@ -137,7 +138,6 @@ nlohmann::json rest::get(const std::string& url_ref, std::vector<std::pair<std::
     result = curl_easy_perform(curl);
     if(result != CURLE_OK)
         std::cout << "Error in get request for url \"" << url << "\", error by curl is \"" << curl_easy_strerror(result) << "\"\n";
-    std::cout << "Result as string:\n" << resultString << "\n";
     nlohmann::json resultJson;
     try{
         resultJson = nlohmann::json::parse(resultString);
